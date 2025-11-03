@@ -14,6 +14,7 @@ import {
   Settings,
   CircleHelp,
   Zap,
+  PlayCircle,
 } from 'lucide-react';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -91,6 +92,7 @@ export const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/dashboard/workflows", icon: GitFork, label: "Workflows" },
     { href: "/dashboard/data-sources", icon: Database, label: "Data Sources" },
+    { href: "/dashboard/orchestration", icon: PlayCircle, label: "Orchestration" },
     { href: "/dashboard/col", icon: Zap, label: "Cognitive Loop" },
     { href: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];

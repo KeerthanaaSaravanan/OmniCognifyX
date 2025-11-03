@@ -123,18 +123,3 @@ export default function CognitiveOrchestrationLoopPage() {
     </div>
   );
 }
-
-// Add animation keyframes to globals.css if they don't exist
-const keyframes = `
-@keyframes pulse-once {
-  0%, 100% { background-color: transparent; }
-  50% { background-color: hsl(var(--accent) / 0.1); }
-}
-.animate-pulse-once {
-  animation: pulse-once 1.5s ease-out;
-}
-`;
-// Note: You might need to add the above CSS to your globals.css file.
-// I will attempt to add it, but it might require manual intervention.
-// For now, adding style tag to component.
-const GlobalStyle = () => <style>{keyframes}</style>
