@@ -37,3 +37,16 @@ export async function getAgentManifest(input: GenerateAgentManifestInput): Promi
     return { error: "Failed to get agent manifest." };
   }
 }
+
+export async function triggerDemo(): Promise<{ success: boolean } | { error: string }> {
+  try {
+    // This is a simulation. In a real app, this would trigger a backend process.
+    console.log("Demo triggered!");
+    // You could fetch from a dummy endpoint here if you had one:
+    // await fetch('http://localhost:3001/api/demo/trigger', { method: 'POST' });
+    return { success: true };
+  } catch (e) {
+    console.error("Failed to trigger demo:", e);
+    return { error: "Failed to trigger demo sequence." };
+  }
+}

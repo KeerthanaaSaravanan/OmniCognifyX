@@ -1,11 +1,12 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 import OrchestrationVisualizer from '@/components/orchestration/orchestration-visualizer';
 import FlowConsole from '@/components/orchestration/flow-console';
+import { useDemoMode } from '@/context/demo-mode-context';
 
 const initialSteps = [
   { id: 'datasense', label: 'DataSense Agent', status: 'idle', duration: 2000 },
@@ -17,11 +18,23 @@ const initialSteps = [
 export default function OrchestrationPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [runId, setRunId] = useState<number | null>(null);
+  const { isDemoMode } = useDemoMode();
 
   const handleRunWorkflow = () => {
     setIsRunning(true);
     setRunId(Date.now()); // Create a new unique ID for this run
   };
+
+  // Trigger workflow when demo mode is activated and we are on this page
+  useEffect(() => {
+    if (isDemoMode && !isRunning) {
+      handleRunWorkflow();
+    }
+    // If we leave demo mode, stop the run
+    if (!isDemoMode && isRunning) {
+        setIsRunning(false);
+    }
+  }, [isDemoMode]);
 
   return (
     <div className="space-y-8">
