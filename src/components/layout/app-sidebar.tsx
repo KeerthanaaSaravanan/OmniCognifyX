@@ -3,7 +3,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { BrainCircuit, LogOut, User } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +23,7 @@ export default function AppSidebar() {
   const currentUser = users[0];
 
   return (
-    <Sidebar variant="sidebar" side="left" collapsible="icon">
+    <Sidebar variant="sidebar" side="left" collapsible="icon" className="backdrop-blur-lg">
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
             <BrainCircuit className="h-8 w-8 text-primary" />
@@ -36,7 +36,7 @@ export default function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 tooltip={item.label}
               >
                 <Link href={item.href}>
