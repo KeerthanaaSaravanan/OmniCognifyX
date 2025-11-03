@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getWorkflowAnalysis } from "@/app/actions";
 import { workflows } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
-import type { WorkflowAnalysisOutput } from "@/ai/flows/cognitive-orchestration-flow";
+import type { WorkflowAnalysisOutput } from "@/ai/schemas/cognitive-orchestration-schemas";
 
 const initialInsights = [
   "Agent synergy improving...",
