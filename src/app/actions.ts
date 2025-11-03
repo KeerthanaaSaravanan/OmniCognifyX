@@ -1,6 +1,7 @@
 "use server";
 
 import { simulateAITask, SimulateAITaskInput } from "@/ai/flows/simulate-ai-tasks";
+import { analyzeWorkflowPerformance, WorkflowAnalysisInput, WorkflowAnalysisOutput } from "@/ai/flows/cognitive-orchestration-flow";
 
 export async function getAIResult(
   input: SimulateAITaskInput
@@ -12,4 +13,16 @@ export async function getAIResult(
     console.error(e);
     return { error: "Failed to get AI result." };
   }
+}
+
+
+export async function getWorkflowAnalysis(input: WorkflowAnalysisInput): Promise<WorkflowAnalysisOutput | { error: string }> {
+    try {
+      // In a real app, you'd fetch real workflow history. Here, we pass the mock data.
+      const result = await analyzeWorkflowPerformance(input);
+      return result;
+    } catch (e) {
+      console.error(e);
+      return { error: "Failed to get workflow analysis." };
+    }
 }
