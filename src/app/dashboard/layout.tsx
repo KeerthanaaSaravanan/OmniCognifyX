@@ -15,9 +15,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex-1 flex flex-col">
             <RecordingBanner />
             <AppHeader />
-            <main className="flex-1 p-4 md:p-6 lg:p-8">
+            <main className="flex-1 p-6 md:p-8 lg:p-12">
                 <PageTransition>
-                    {children}
+                    <div className="mx-auto max-w-7xl">
+                        {children}
+                    </div>
                 </PageTransition>
             </main>
           </div>

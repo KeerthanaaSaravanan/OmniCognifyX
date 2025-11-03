@@ -51,13 +51,18 @@ export default function OrchestrationPage() {
         </Button>
       </div>
 
-      <OrchestrationVisualizer
-        initialSteps={initialSteps}
-        isRunning={isRunning}
-        onCompletion={() => setIsRunning(false)}
-      />
-      
-      <FlowConsole isRunning={isRunning} runId={runId} />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="lg:col-span-3">
+          <OrchestrationVisualizer
+            initialSteps={initialSteps}
+            isRunning={isRunning}
+            onCompletion={() => setIsRunning(false)}
+          />
+        </div>
+        <div className="lg:col-span-2">
+            <FlowConsole isRunning={isRunning} runId={runId} />
+        </div>
+      </div>
     </div>
   );
 }
