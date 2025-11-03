@@ -2,8 +2,9 @@
 
 import { simulateAITask, SimulateAITaskInput } from "@/ai/flows/simulate-ai-tasks";
 import { analyzeWorkflowPerformance } from "@/ai/flows/cognitive-orchestration-flow";
-import { generateAgentManifest, GenerateAgentManifestInput, GenerateAgentManifestOutput } from "@/ai/flows/generate-agent-manifest-flow";
+import { generateAgentManifest } from "@/ai/flows/generate-agent-manifest-flow";
 import type { WorkflowAnalysisInput, WorkflowAnalysisOutput } from "@/ai/schemas/cognitive-orchestration-schemas";
+import type { GenerateAgentManifestInput, GenerateAgentManifestOutput } from "@/ai/schemas/generate-agent-manifest-schemas";
 
 export async function getAIResult(
   input: SimulateAITaskInput
