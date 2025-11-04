@@ -50,7 +50,7 @@ export default function AppSidebar() {
                 tooltip={item.label}
                 className="bg-transparent hover:bg-sidebar-border/50 data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold"
               >
-                <Link href={item.href}>
+                <Link href={item.href} prefetch={true}>
                   <item.icon />
                   <span>{item.label}</span>
                 </Link>
@@ -69,7 +69,7 @@ export default function AppSidebar() {
                tooltip={item.label}
                className="bg-transparent hover:bg-sidebar-border/50 data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold"
              >
-               <Link href={item.href}>
+               <Link href={item.href} prefetch={true}>
                  <item.icon />
                  <div className="flex flex-col h-auto justify-center group-data-[collapsible=icon]:hidden">
                     <span>{item.label}</span>
@@ -91,7 +91,7 @@ export default function AppSidebar() {
               tooltip={item.label}
               className="bg-transparent hover:bg-sidebar-border/50 data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold"
             >
-              <Link href={item.href}>
+              <Link href={item.href} prefetch={true}>
                 <item.icon />
                 <div className="flex flex-col h-auto justify-center group-data-[collapsible=icon]:hidden">
                    <span>{item.label}</span>
