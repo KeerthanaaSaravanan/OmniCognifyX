@@ -2,9 +2,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Share2, X } from "lucide-react";
+import { CheckCircle, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -75,12 +75,8 @@ export default function WorkflowSummaryModal({ isOpen, onClose, workflow }: Work
                     >
                         <CheckCircle className="h-8 w-8 text-green-400" />
                     </motion.div>
-                  <DialogTitle asChild>
                     <h2 className="text-3xl font-bold mt-4 font-headline">Workflow Published Successfully</h2>
-                  </DialogTitle>
-                  <DialogDescription asChild>
                     <p className="text-lg text-blue-300/80 mt-1">Your orchestration is live and optimized.</p>
-                  </DialogDescription>
                 </div>
 
                 <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-4 text-sm bg-white/5 p-6 rounded-lg border border-white/10">
@@ -119,10 +115,6 @@ export default function WorkflowSummaryModal({ isOpen, onClose, workflow }: Work
                   🧩 Powered by IBM watsonx Orchestrate
                 </p>
               </div>
-
-               <Button onClick={onClose} variant="ghost" size="icon" className="absolute top-4 right-4 text-white/50 hover:text-white">
-                  <X className="h-5 w-5" />
-               </Button>
             </motion.div>
              <style jsx>{`
             .bg-grid-pattern {
