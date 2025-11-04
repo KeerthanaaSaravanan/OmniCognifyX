@@ -10,32 +10,35 @@ import { DemoModeProvider } from "@/context/demo-mode-context";
 import RecordingBanner from "@/components/layout/recording-banner";
 import { PageTransition } from "@/components/layout/page-transition";
 import { cn } from "@/lib/utils";
+import { WorkflowProvider } from "@/context/workflow-context";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isWorkflowBuilder = pathname === '/dashboard/workflows/create';
 
   return (
-    <DemoModeProvider>
-      <SidebarProvider>
-        <div className="flex min-h-screen bg-background">
-          <AppSidebar />
-          <div className="flex-1 flex flex-col">
-            <RecordingBanner />
-            <AppHeader />
-            <main className={cn(
-              "flex-1 p-6 md:p-8 bg-gray-50/50 dark:bg-gray-950/20",
-              isWorkflowBuilder && "p-0"
-            )}>
-              <PageTransition>
-                <div className={cn("mx-auto max-w-screen-2xl h-full w-full", isWorkflowBuilder && "max-w-none")}>
-                    {children}
-                </div>
-              </PageTransition>
-            </main>
-          </div>
-        </div>
-      </SidebarProvider>
-    </DemoModeProvider>
+    <WorkflowProvider>
+        <DemoModeProvider>
+        <SidebarProvider>
+            <div className="flex min-h-screen bg-background">
+            <AppSidebar />
+            <div className="flex-1 flex flex-col">
+                <RecordingBanner />
+                <AppHeader />
+                <main className={cn(
+                "flex-1 p-6 md:p-8 bg-gray-50/50 dark:bg-gray-950/20",
+                isWorkflowBuilder && "p-0 md:p-0"
+                )}>
+                <PageTransition>
+                    <div className={cn("mx-auto max-w-screen-2xl h-full w-full", isWorkflowBuilder && "max-w-none")}>
+                        {children}
+                    </div>
+                </PageTransition>
+                </main>
+            </div>
+            </div>
+        </SidebarProvider>
+        </DemoModeProvider>
+    </WorkflowProvider>
   );
 }
