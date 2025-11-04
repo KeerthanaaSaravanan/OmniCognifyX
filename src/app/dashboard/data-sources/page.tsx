@@ -199,23 +199,27 @@ export default function DataSourcesPage() {
                                    <div className="space-y-4">
                                        <h3 className="font-semibold">Data Completeness</h3>
                                        <ChartContainer config={{}} className="h-48">
-                                            <RechartsBarChart data={initialChartData} layout="vertical" margin={{ left: 20 }}>
-                                                <RechartsBarChart.Tooltip content={<ChartTooltipContent hideLabel />} />
-                                                <Bar dataKey="completeness" fill="#0F62FE" radius={[0, 4, 4, 0]} />
-                                            </RechartsBarChart>
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <RechartsBarChart data={initialChartData} layout="vertical" margin={{ left: 20 }}>
+                                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
+                                                    <Bar dataKey="completeness" fill="#0F62FE" radius={[0, 4, 4, 0]} />
+                                                </RechartsBarChart>
+                                            </ResponsiveContainer>
                                         </ChartContainer>
                                    </div>
                                     <div className="space-y-4">
                                        <h3 className="font-semibold">Data Type Distribution</h3>
                                        <ChartContainer config={{}} className="h-48">
-                                            <RechartsPieChart>
-                                                <RechartsPieChart.Tooltip content={<ChartTooltipContent hideLabel />} />
-                                                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={60}>
-                                                    {pieData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                                                    ))}
-                                                </Pie>
-                                            </RechartsPieChart>
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <RechartsPieChart>
+                                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={60}>
+                                                        {pieData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                        ))}
+                                                    </Pie>
+                                                </RechartsPieChart>
+                                            </ResponsiveContainer>
                                         </ChartContainer>
                                    </div>
                                 </CardContent>
@@ -257,3 +261,5 @@ export default function DataSourcesPage() {
         </div>
     );
 }
+
+    
