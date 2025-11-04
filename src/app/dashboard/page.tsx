@@ -1,19 +1,34 @@
+
 import StatsCards from "@/components/dashboard/stats-cards";
-import RecentWorkflowsCard from "@/components/dashboard/recent-workflows-card";
+import AgentModules from "@/components/dashboard/agent-modules";
+import { Button } from "@/components/ui/button";
+import { PlayCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight font-headline">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here's an overview of your AI workflows.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Orchestration Dashboard</h1>
+          <p className="text-muted-foreground">
+            Real-time AI workflow automation
+          </p>
+        </div>
+        <Link href="/dashboard/orchestration">
+          <Button size="lg">
+            <PlayCircle className="mr-2 h-5 w-5" />
+            Show Orchestration Flow
+          </Button>
+        </Link>
       </div>
 
       <StatsCards />
 
-      <RecentWorkflowsCard />
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight mb-4">AI Agent Modules</h2>
+        <AgentModules />
+      </div>
     </div>
   );
 }

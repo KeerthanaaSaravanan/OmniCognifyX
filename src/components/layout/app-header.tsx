@@ -1,13 +1,12 @@
 "use client";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { PlusCircle, Video, Sun, Moon } from "lucide-react";
-import Link from "next/link";
 import { useDemoMode } from "@/context/demo-mode-context";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Video, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 
 export default function AppHeader() {
   const { isDemoMode, setIsDemoMode } = useDemoMode();
@@ -37,15 +36,9 @@ export default function AppHeader() {
             <Switch id="demo-mode" checked={isDemoMode} onCheckedChange={handleDemoModeChange} />
             <Label htmlFor="demo-mode" className="flex items-center gap-2 cursor-pointer">
                 <Video className="h-5 w-5 text-purple-500"/>
-                <span className="font-medium">Demo Mode</span>
+                <span className="font-medium text-sm">Demo Mode</span>
             </Label>
         </div>
-        <Link href="/dashboard/workflows/create">
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create Workflow
-            </Button>
-        </Link>
       </div>
     </header>
   );
