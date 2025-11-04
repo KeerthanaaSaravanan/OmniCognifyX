@@ -218,15 +218,17 @@ export default function WorkflowBuilder() {
       </div>
 
       {/* Main Canvas */}
-      <div className="flex-1 relative overflow-auto z-10 bg-[#E8F0FA] dark:bg-gray-900/50" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
-        <div className="absolute top-0 left-0 w-full h-full bg-dots" />
+      <div className="flex-1 relative overflow-auto z-10 bg-[#E8F0FA] dark:bg-gray-950/20" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
+        <div className="absolute inset-0 bg-dots" />
         <style jsx>{`
             .bg-dots {
-            background-image: radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.5) 1px, transparent 0);
-            background-size: 25px 25px;
+                background-color: #E8F0FA;
+                background-image: radial-gradient(rgba(150,170,190,0.4) 1px, transparent 0);
+                background-size: 25px 25px;
             }
             .dark .bg-dots {
-            background-image: radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.2) 1px, transparent 0);
+                background-color: transparent;
+                background-image: radial-gradient(hsl(var(--border) / 0.2) 1px, transparent 0);
             }
         `}</style>
         
