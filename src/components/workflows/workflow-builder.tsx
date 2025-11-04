@@ -11,6 +11,7 @@ import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import WorkflowSummaryModal from "./workflow-summary-modal";
 import { WorkflowContext } from "@/context/workflow-context";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 type WorkflowStep = AvailableTask & {
   instanceId: string;
@@ -77,7 +78,7 @@ const Node = ({
 
 
       <div className="flex-1">
-        <p className="font-bold text-card-foreground text-[18px]">{step.name}</p>
+        <p className="font-bold text-card-foreground text-base">{step.name}</p>
         <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
       </div>
 
@@ -145,7 +146,7 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
       transition={{ type: "spring", stiffness: 350, damping: 35 }}
-      className="absolute top-0 right-0 h-full w-[350px] bg-background/80 backdrop-blur-xl border-l border-border shadow-2xl flex flex-col z-30"
+      className="absolute top-0 right-0 h-full w-[350px] bg-card/80 backdrop-blur-xl border-l border-border shadow-2xl flex flex-col z-30"
     >
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -160,7 +161,7 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
         <p className="text-sm text-muted-foreground">Configure the settings for your task below.</p>
         <div>
           <label className="text-xs font-medium text-muted-foreground">Message</label>
-          <textarea className="w-full bg-secondary border-input rounded-md p-2 mt-1 text-sm focus:ring-primary focus:border-primary" defaultValue={`This is a test message from ${selectedTask.name}`}></textarea>
+          <Textarea className="w-full bg-secondary border-input rounded-md p-2 mt-1 text-sm focus:ring-primary focus:border-primary" defaultValue={`This is a test message from ${selectedTask.name}`}></Textarea>
         </div>
       </div>
       <div className="p-4 border-t border-border flex justify-end gap-2">
@@ -261,7 +262,7 @@ export default function WorkflowBuilder() {
   return (
     <div className="flex w-full h-full rounded-lg overflow-hidden bg-background">
       {/* Left Toolbar */}
-      <div className="w-20 bg-background/70 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
+      <div className="w-20 bg-card/60 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
         {availableTasks.map(task => (
           <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
             <task.icon className="h-6 w-6 text-primary" />

@@ -30,8 +30,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   <RecordingBanner />
                   <AppHeader />
                   <main className={cn(
-                    "flex-1 p-6 md:p-8 bg-gray-50/50 dark:bg-card/40",
-                    isWorkflowBuilder && "p-0 md:p-0"
+                    "flex-1",
+                    !isWorkflowBuilder && "p-6 md:p-8"
                   )}>
                     <PageTransition>
                       <div className={cn("mx-auto max-w-screen-2xl h-full w-full", isWorkflowBuilder && "max-w-none")}>
