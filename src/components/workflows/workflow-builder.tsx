@@ -43,11 +43,12 @@ const Node = ({
       }}
       dragMomentum={false}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`absolute group w-72 bg-card border rounded-xl shadow-lg flex items-start gap-4 p-4 ${isSelected ? 'border-primary ring-2 ring-primary/50 shadow-primary/20' : 'shadow-md'}`}
+      className={`absolute group w-72 bg-card border rounded-xl flex items-start gap-4 p-4 shadow-lg ${isSelected ? 'border-primary ring-2 ring-primary/50 shadow-primary/20' : 'hover:shadow-xl transition-shadow'}`}
       style={{
         left: step.position.x,
         top: step.position.y,
         cursor: 'default',
+        borderRadius: '12px'
       }}
       onClick={() => onSelect(step)}
     >
@@ -205,12 +206,15 @@ export default function WorkflowBuilder() {
   
 
   return (
-    <div className="flex w-full h-full bg-background rounded-lg border-border overflow-hidden relative">
-      <div className="absolute top-0 left-0 w-full h-full bg-dots bg-gray-50/50 dark:bg-gray-950/20" />
+    <div className="flex w-full h-full bg-[#E8F0FA] dark:bg-gray-900/50 rounded-lg overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-full bg-dots" />
       <style jsx>{`
         .bg-dots {
           background-image: radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.5) 1px, transparent 0);
           background-size: 25px 25px;
+        }
+        .dark .bg-dots {
+          background-image: radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.2) 1px, transparent 0);
         }
       `}</style>
 
@@ -249,8 +253,8 @@ export default function WorkflowBuilder() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-muted-foreground pointer-events-none flex flex-col items-center">
             <div className="w-[400px] h-[200px] border-2 border-dashed border-border/80 rounded-2xl flex items-center justify-center p-8">
                 <div>
-                    <h3 className="text-lg font-medium text-foreground">TaskFlow Canvas</h3>
-                    <p>Add an agent from the toolbar to get started.</p>
+                    <h3 className="text-lg font-bold font-headline text-foreground">TaskFlow Canvas</h3>
+                    <p className="text-sm font-medium">Add an agent from the toolbar to get started.</p>
                 </div>
             </div>
           </div>
@@ -264,7 +268,7 @@ export default function WorkflowBuilder() {
 
       {/* Top Buttons */}
       <div className="absolute top-4 right-4 z-20 flex gap-2" style={{ right: selectedStep ? '370px' : '1rem', transition: 'right 0.35s ease-in-out' }}>
-        <Button variant="outline">Save Draft</Button>
+        <Button variant="outline" className="bg-white">Save Draft</Button>
         <Button>Publish Workflow</Button>
       </div>
     </div>

@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <RecordingBanner />
             <AppHeader />
             <main className={cn(
-              "flex-1",
+              "flex-1 flex",
               isWorkflowBuilder ? 'p-0' : 'p-6 md:p-8 bg-gray-50/50 dark:bg-gray-950/20'
             )}>
               <PageTransition>
