@@ -18,6 +18,24 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isWorkflowBuilder = pathname === '/dashboard/workflows/create';
 
+  if (isWorkflowBuilder) {
+    return (
+      <WorkflowProvider>
+        <DataSessionProvider>
+          <GovernanceProvider>
+            <DemoModeProvider>
+              <SidebarProvider>
+                <div className="min-h-screen bg-background">
+                    {children}
+                </div>
+              </SidebarProvider>
+            </DemoModeProvider>
+          </GovernanceProvider>
+        </DataSessionProvider>
+      </WorkflowProvider>
+    );
+  }
+
   return (
     <WorkflowProvider>
       <DataSessionProvider>
@@ -29,12 +47,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <div className="flex-1 flex flex-col">
                   <RecordingBanner />
                   <AppHeader />
-                  <main className={cn(
-                    "flex-1",
-                    !isWorkflowBuilder && "p-6 md:p-8"
-                  )}>
+                  <main className="flex-1 p-6 md:p-8">
                     <PageTransition>
-                      <div className={cn("mx-auto max-w-screen-2xl h-full w-full", isWorkflowBuilder && "max-w-none")}>
+                      <div className="mx-auto max-w-screen-2xl h-full w-full">
                         {children}
                       </div>
                     </PageTransition>
