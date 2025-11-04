@@ -3,7 +3,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { availableTasks } from "@/lib/data";
-import type { AvailableTask, Workflow } from "@/lib/data";
+import type { AvailableTask } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash2, X, Settings, MousePointer2 } from "lucide-react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
@@ -13,6 +13,14 @@ type WorkflowStep = AvailableTask & {
   instanceId: string;
   position: { x: number; y: number };
 };
+
+type WorkflowSummary = {
+    name: string;
+    tasks: number;
+    agents: string[];
+    createdAt: Date;
+};
+
 
 const Node = ({
   step,
@@ -164,7 +172,7 @@ export default function WorkflowBuilder() {
   const [steps, setSteps] = useState<WorkflowStep[]>([]);
   const [selectedStep, setSelectedStep] = useState<WorkflowStep | null>(null);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
-  const [publishedWorkflow, setPublishedWorkflow] = useState<Omit<Workflow, 'id' | 'status' | 'duration' | 'lastRun'> & {agents: string[]}> | null>(null);
+  const [publishedWorkflow, setPublishedWorkflow] = useState<WorkflowSummary | null>(null);
 
 
   const addStep = (task: AvailableTask) => {
@@ -306,3 +314,5 @@ export default function WorkflowBuilder() {
     </div>
   );
 }
+
+    
