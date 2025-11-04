@@ -6,12 +6,13 @@ import { useState, useCallback, useMemo, useContext } from "react";
 import { availableTasks } from "@/lib/data";
 import type { AvailableTask } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2, X, Settings, MousePointer2 } from "lucide-react";
+import { PlusCircle, Trash2, X, Settings, MousePointer2, Home } from "lucide-react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import WorkflowSummaryModal from "./workflow-summary-modal";
 import { WorkflowContext } from "@/context/workflow-context";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 
 type WorkflowStep = AvailableTask & {
   instanceId: string;
@@ -263,12 +264,20 @@ export default function WorkflowBuilder() {
     <div className="flex w-full h-full rounded-lg overflow-hidden bg-background">
       {/* Left Toolbar */}
       <div className="w-20 bg-card/60 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
-        {availableTasks.map(task => (
-          <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
-            <task.icon className="h-6 w-6 text-primary" />
-            <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
+        <Link href="/dashboard">
+          <Button variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" title="Back to Dashboard">
+            <Home className="h-6 w-6 text-primary" />
+            <span className="text-xs mt-1 text-muted-foreground">Home</span>
           </Button>
-        ))}
+        </Link>
+        <div className="flex-1 flex flex-col items-center justify-center gap-2">
+            {availableTasks.map(task => (
+            <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+                <task.icon className="h-6 w-6 text-primary" />
+                <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
+            </Button>
+            ))}
+        </div>
       </div>
 
       {/* Main Canvas */}

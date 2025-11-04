@@ -8,6 +8,7 @@ import {
   Bot,
   Shield,
   Lightbulb,
+  Home,
 } from 'lucide-react';
 import { PlaceHolderImages } from './placeholder-images';
 
