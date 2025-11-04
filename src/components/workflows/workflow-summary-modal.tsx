@@ -51,9 +51,8 @@ export default function WorkflowSummaryModal({ isOpen, onClose, workflow }: Work
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
           <DialogContent
-            className="z-50 p-0 border-none shadow-2xl max-w-2xl"
+            className="z-50 p-0 border-none shadow-2xl max-w-2xl bg-transparent"
             onInteractOutside={(e) => e.preventDefault()}
-            asChild
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -121,13 +120,13 @@ export default function WorkflowSummaryModal({ isOpen, onClose, workflow }: Work
                   <X className="h-5 w-5" />
                </Button>
             </motion.div>
-          </DialogContent>
-          <style jsx>{`
+             <style jsx>{`
             .bg-grid-pattern {
                 background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
                 background-size: 20px 20px;
             }
           `}</style>
+          </DialogContent>
         </Dialog>
       )}
     </AnimatePresence>
