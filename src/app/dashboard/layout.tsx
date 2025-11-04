@@ -24,11 +24,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <RecordingBanner />
             <AppHeader />
             <main className={cn(
-              "flex-1 bg-gray-50/50 dark:bg-gray-950/20",
-              isWorkflowBuilder ? 'p-0' : 'p-6 md:p-8'
+              "flex-1",
+              isWorkflowBuilder ? 'p-0' : 'p-6 md:p-8 bg-gray-50/50 dark:bg-gray-950/20'
             )}>
               <PageTransition>
-                <div className={cn("h-full", !isWorkflowBuilder && "mx-auto max-w-screen-2xl")}>
+                <div className={cn("h-full w-full", !isWorkflowBuilder && "mx-auto max-w-screen-2xl")}>
                     {children}
                 </div>
               </PageTransition>
@@ -39,5 +39,3 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     </DemoModeProvider>
   );
 }
-
-    

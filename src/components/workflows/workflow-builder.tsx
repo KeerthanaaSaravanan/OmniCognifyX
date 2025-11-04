@@ -31,6 +31,7 @@ const Node = ({
   return (
     <motion.div
       key={step.instanceId}
+      layout
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
@@ -42,25 +43,28 @@ const Node = ({
       }}
       dragMomentum={false}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`absolute group w-72 bg-card border rounded-lg shadow-lg flex items-start gap-4 p-4 ${isSelected ? 'border-primary ring-2 ring-primary/50 shadow-primary/20' : 'border-border'}`}
+      className={`absolute group w-72 bg-card border rounded-xl shadow-lg flex items-start gap-4 p-4 ${isSelected ? 'border-primary ring-2 ring-primary/50 shadow-primary/20' : 'shadow-md'}`}
       style={{
-        x: step.position.x,
-        y: step.position.y,
+        left: step.position.x,
+        top: step.position.y,
         cursor: 'default',
       }}
       onClick={() => onSelect(step)}
     >
       <div className="absolute -left-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-background border flex items-center justify-center">
-        <div className="h-2 w-2 rounded-full bg-muted-foreground" />
+        <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
       </div>
       <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-background border flex items-center justify-center">
-        <div className="h-2 w-2 rounded-full bg-muted-foreground" />
+        <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
       </div>
 
-      <step.icon className="h-6 w-6 text-primary mt-1" />
+      <div className={`flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/50`}>
+        <step.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+      </div>
+
 
       <div className="flex-1">
-        <p className="font-bold text-card-foreground">{step.name}</p>
+        <p className="font-bold text-card-foreground text-[18px]">{step.name}</p>
         <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
       </div>
 
@@ -78,7 +82,7 @@ const Node = ({
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); onSelect(step); }}>
           <Settings className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/20 hover:text-destructive" onClick={(e) => { e.stopPropagation(); onRemove(step.instanceId); }}>
+        <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/10 hover:text-destructive" onClick={(e) => { e.stopPropagation(); onRemove(step.instanceId); }}>
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
@@ -132,7 +136,9 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
     >
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <selectedTask.icon className="h-6 w-6 text-primary" />
+          <div className={`flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/50`}>
+            <selectedTask.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
           <h3 className="text-lg font-bold">{selectedTask.name}</h3>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5" /></Button>
@@ -141,7 +147,7 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
         <p className="text-sm text-muted-foreground">Configure the settings for your task below.</p>
         <div>
           <label className="text-xs font-medium text-muted-foreground">Message</label>
-          <textarea className="w-full bg-secondary border border-border rounded-md p-2 mt-1 text-sm focus:ring-primary focus:border-primary" defaultValue={`This is a test message from ${selectedTask.name}`}></textarea>
+          <textarea className="w-full bg-secondary border-input rounded-md p-2 mt-1 text-sm focus:ring-primary focus:border-primary" defaultValue={`This is a test message from ${selectedTask.name}`}></textarea>
         </div>
       </div>
       <div className="p-4 border-t border-border flex justify-end gap-2">
@@ -157,7 +163,7 @@ export default function WorkflowBuilder() {
   const [selectedStep, setSelectedStep] = useState<WorkflowStep | null>(null);
 
   const addStep = (task: AvailableTask) => {
-    const yOffset = steps.length * 140; // Increased vertical spacing
+    const yOffset = steps.length * 150; // Increased vertical spacing
     const xOffset = 50 + (steps.length % 2) * 350; // Stagger initial positions
 
     const newStep: WorkflowStep = {
@@ -172,7 +178,6 @@ export default function WorkflowBuilder() {
 
   const removeStep = (instanceId: string) => {
     setSteps(currentSteps => {
-        const stepToRemove = currentSteps.find(s => s.instanceId === instanceId);
         if (selectedStep?.instanceId === instanceId) {
             setSelectedStep(null);
         }
@@ -193,25 +198,26 @@ export default function WorkflowBuilder() {
   const connections = useMemo(() => {
     return steps.slice(0, -1).map((step, index) => {
         const nextStep = steps[index + 1];
+        if (!step || !nextStep) return null;
         return { from: step.position, to: nextStep.position, id: `${step.instanceId}-${nextStep.instanceId}` };
-    });
+    }).filter(Boolean) as { from: {x: number, y: number}, to: {x: number, y: number}, id: string}[];
   }, [steps]);
   
 
   return (
-    <div className="flex w-full h-full bg-card/50 rounded-lg border border-border overflow-hidden relative">
-      <div className="absolute top-0 left-0 w-full h-full bg-dots" />
+    <div className="flex w-full h-full bg-background rounded-lg border-border overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-full bg-dots bg-gray-50/50 dark:bg-gray-950/20" />
       <style jsx>{`
         .bg-dots {
-          background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
-          background-size: 20px 20px;
+          background-image: radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.5) 1px, transparent 0);
+          background-size: 25px 25px;
         }
       `}</style>
 
       {/* Left Toolbar */}
-      <div className="w-16 bg-background/50 border-r border-border flex flex-col items-center p-2 gap-2 z-20">
+      <div className="w-16 bg-background/70 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
         {availableTasks.map(task => (
-          <Button key={task.id} variant="ghost" size="icon" className="h-12 w-12 flex-col" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+          <Button key={task.id} variant="ghost" size="icon" className="h-14 w-14 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
             <task.icon className="h-5 w-5" />
             <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
           </Button>
@@ -219,7 +225,7 @@ export default function WorkflowBuilder() {
       </div>
 
       {/* Main Canvas */}
-      <div className="flex-1 relative overflow-auto z-10" id="canvas">
+      <div className="flex-1 relative overflow-auto z-10" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
          <AnimatePresence>
           {connections.map(conn => (
             <ConnectionLine key={conn.id} from={conn.from} to={conn.to} />
@@ -240,9 +246,13 @@ export default function WorkflowBuilder() {
         </AnimatePresence>
 
         {steps.length === 0 && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-muted-foreground pointer-events-none">
-            <p className="font-medium text-lg">Workflow Canvas</p>
-            <p className="text-sm">Add an agent from the toolbar to get started.</p>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-muted-foreground pointer-events-none flex flex-col items-center">
+            <div className="w-[400px] h-[200px] border-2 border-dashed border-border/80 rounded-2xl flex items-center justify-center p-8">
+                <div>
+                    <h3 className="text-lg font-medium text-foreground">TaskFlow Canvas</h3>
+                    <p>Add an agent from the toolbar to get started.</p>
+                </div>
+            </div>
           </div>
         )}
       </div>
@@ -260,5 +270,3 @@ export default function WorkflowBuilder() {
     </div>
   );
 }
-
-    
