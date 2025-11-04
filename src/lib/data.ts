@@ -9,6 +9,10 @@ import {
   Shield,
   Lightbulb,
   Home,
+  GitBranch,
+  Repeat,
+  GitMerge,
+  Puzzle,
 } from 'lucide-react';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -34,7 +38,7 @@ export interface User {
 
 export interface DataSource {
   id: string;
-  name: string;
+  name:string;
   type: string;
   icon: LucideIcon;
   status: 'Connected' | 'Disconnected';
@@ -45,6 +49,7 @@ export interface AvailableTask {
   name: string;
   description: string;
   icon: LucideIcon;
+  type: 'agent' | 'logic';
 }
 
 export interface DataSession {
@@ -88,12 +93,49 @@ export const dataSources: DataSource[] = [
 ];
 
 export const availableTasks: AvailableTask[] = [
-  { id: 'task-01', name: 'DataSense Agent', description: 'Ingest and analyze raw data with watsonx.data', icon: Database },
-  { id: 'task-02', name: 'TaskFlow Agent', description: 'Automate repetitive tasks via watsonx.orchestrate.', icon: Zap },
-  { id: 'task-03', name: 'InsightSynth Agent', description: 'Generate insights and summaries with watsonx.ai', icon: Bot },
-  { id: 'task-04', name: 'GovernGuard Agent', description: 'Check data integrity via watsonx.governance', icon: Shield },
+  { id: 'task-01', name: 'DataSense Agent', description: 'Ingest and analyze raw data with watsonx.data', icon: Database, type: 'agent' },
+  { id: 'task-02', name: 'TaskFlow Agent', description: 'Automate repetitive tasks via watsonx.orchestrate.', icon: Zap, type: 'agent' },
+  { id: 'task-03', name: 'InsightSynth Agent', description: 'Generate insights and summaries with watsonx.ai', icon: Bot, type: 'agent' },
+  { id: 'task-04', name: 'GovernGuard Agent', description: 'Check data integrity via watsonx.governance', icon: Shield, type: 'agent' },
+  { id: 'logic-01', name: 'Decision Node', description: 'Branch workflow based on a condition', icon: GitBranch, type: 'logic' },
+  { id: 'logic-02', name: 'Loop Node', description: 'Repeat a sequence of tasks', icon: Repeat, type: 'logic' },
+  { id: 'logic-03', name: 'Merge Node', description: 'Combine multiple workflow paths', icon: GitMerge, type: 'logic' },
+  { id: 'logic-04', name: 'Trigger Node', description: 'Start workflow based on an event', icon: Puzzle, type: 'logic' },
 ];
 
+export interface WorkflowTemplate {
+  id: string;
+  name: string;
+  description: string;
+  nodes: string[]; // List of availableTask IDs
+}
+
+export const workflowTemplates: WorkflowTemplate[] = [
+    {
+        id: 'template-01',
+        name: 'Data Audit Flow',
+        description: 'An essential workflow for ensuring data quality and compliance from ingestion to validation.',
+        nodes: ['task-01', 'task-04']
+    },
+    {
+        id: 'template-02',
+        name: 'Insight Generation',
+        description: 'A standard pipeline to process data and extract actionable AI-driven insights.',
+        nodes: ['task-01', 'task-03']
+    },
+    {
+        id: 'template-03',
+        name: 'Full Compliance Review',
+        description: 'A comprehensive flow that ingests, processes, and validates data against governance rules.',
+        nodes: ['task-01', 'task-02', 'task-04']
+    },
+    {
+        id: 'template-04',
+        name: 'Cognitive Feedback Loop',
+        description: 'An advanced, self-optimizing loop where insights are generated and then validated for continuous improvement.',
+        nodes: ['task-02', 'task-03', 'task-04']
+    }
+];
 
 export const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Overview" },
