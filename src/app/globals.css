@@ -4,32 +4,32 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
+    --background: 220 20% 98%; /* Light Gray */
+    --foreground: 225 10% 10%; /* Carbon Gray */
     --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card-foreground: 225 10% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 221 83% 53%;
+    --popover-foreground: 225 10% 10%;
+    --primary: 221 83% 53%; /* IBM Blue */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 13% 91%;
-    --secondary-foreground: 224 71.4% 4.1%;
-    --muted: 220 13% 91%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 225 10% 10%;
+    --muted: 220 14% 94%;
     --muted-foreground: 220 9% 46%;
-    --accent: 220 13% 91%;
-    --accent-foreground: 224 71.4% 4.1%;
+    --accent: 180 80% 40%; /* Teal Accent */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 221 83% 53%;
     --radius: 0.5rem;
-
-    --sidebar-background: 221 83% 45%;
+    
+    --sidebar-background: 225 10% 13%; /* Carbon Gray */
     --sidebar-foreground: 220 13% 95%;
-    --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 221 83% 45%;
-    --sidebar-border: 221 83% 48%;
+    --sidebar-accent: 221 83% 53%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 225 10% 20%;
   }
 
   .dark {
@@ -39,25 +39,25 @@
     --card-foreground: 0 0% 98%;
     --popover: 225 12% 5%;
     --popover-foreground: 0 0% 98%;
-    --primary: 221 83% 63%;
+    --primary: 221 83% 63%; /* IBM Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 225 12% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 225 12% 18%;
     --muted-foreground: 225 8% 65%;
-    --accent: 225 12% 18%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 180 80% 50%; /* Teal Accent */
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 225 12% 20%;
     --input: 225 12% 18%;
     --ring: 221 83% 63%;
 
-    --sidebar-background: 221 83% 45%;
+    --sidebar-background: 225 10% 13%; /* Carbon Gray */
     --sidebar-foreground: 220 13% 95%;
-    --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 221 83% 45%;
-    --sidebar-border: 221 83% 48%;
+    --sidebar-accent: 221 83% 63%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 225 10% 20%;
   }
 }
 
@@ -68,4 +68,18 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+    .bg-grid-pattern {
+        background-image:
+            linear-gradient(rgba(150,170,190,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(150,170,190,0.2) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+    .dark .bg-grid-pattern {
+        background-image:
+            linear-gradient(hsl(var(--border) / 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(var(--border) / 0.1) 1px, transparent 1px);
+    }
 }

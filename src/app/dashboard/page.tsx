@@ -27,8 +27,8 @@ export default function DashboardPage() {
 
       <StatsCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
           <h2 className="text-2xl font-bold tracking-tight mb-4">Recent Workflows</h2>
           <WorkflowsDataTable />
         </div>

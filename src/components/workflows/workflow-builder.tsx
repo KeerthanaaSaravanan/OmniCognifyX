@@ -71,8 +71,8 @@ const Node = ({
         <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
       </div>
 
-      <div className={`flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/50`}>
-        <step.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+      <div className={`flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10`}>
+        <step.icon className="h-6 w-6 text-primary" />
       </div>
 
 
@@ -149,8 +149,8 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
     >
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`flex items-center justify-center h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/50`}>
-            <selectedTask.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <div className={`flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10`}>
+            <selectedTask.icon className="h-5 w-5 text-primary" />
           </div>
           <h3 className="text-lg font-bold">{selectedTask.name}</h3>
         </div>
@@ -259,31 +259,20 @@ export default function WorkflowBuilder() {
 
 
   return (
-    <div className="flex w-full h-full rounded-lg overflow-hidden">
+    <div className="flex w-full h-full rounded-lg overflow-hidden bg-background">
       {/* Left Toolbar */}
-      <div className="w-16 bg-background/70 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
+      <div className="w-20 bg-background/70 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
         {availableTasks.map(task => (
-          <Button key={task.id} variant="ghost" size="icon" className="h-14 w-14 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
-            <task.icon className="h-5 w-5" />
+          <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+            <task.icon className="h-6 w-6 text-primary" />
             <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
           </Button>
         ))}
       </div>
 
       {/* Main Canvas */}
-      <div className="flex-1 relative overflow-auto z-10" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
-        <div className="absolute inset-0 bg-dots" />
-        <style jsx>{`
-            .bg-dots {
-                background-color: #E8F0FA;
-                background-image: radial-gradient(rgba(150,170,190,0.4) 1px, transparent 0);
-                background-size: 25px 25px;
-            }
-            .dark .bg-dots {
-                background-color: transparent;
-                background-image: radial-gradient(hsl(var(--border) / 0.2) 1px, transparent 0);
-            }
-        `}</style>
+      <div className="flex-1 relative overflow-hidden z-10" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
+        <div className="absolute inset-0 bg-grid-pattern" />
         
          <AnimatePresence>
           {connections.map(conn => (
@@ -333,7 +322,7 @@ export default function WorkflowBuilder() {
 
       {/* Top Buttons */}
       <div className="absolute top-4 z-20 flex gap-2" style={{ right: selectedStep ? '370px' : '1rem', transition: 'right 0.35s ease-in-out' }}>
-        <Button variant="outline" className="bg-white dark:bg-card">Save Draft</Button>
+        <Button variant="outline" className="bg-card">Save Draft</Button>
         <Button onClick={handlePublish}>Publish Workflow</Button>
       </div>
     </div>

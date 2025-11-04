@@ -61,10 +61,7 @@ export default function WorkflowsDataTable() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>All Workflows</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <div className="relative overflow-auto">
           <Table>
             <TableHeader>
@@ -95,7 +92,7 @@ export default function WorkflowsDataTable() {
                       <div className="flex items-center gap-2">
                           {workflow.name}
                           {newItems.has(workflow.id) && (
-                              <Badge className="bg-blue-100 text-primary dark:bg-blue-900/80 dark:text-blue-300">NEW</Badge>
+                              <Badge className="bg-primary/20 text-primary-foreground">NEW</Badge>
                           )}
                       </div>
                     </TableCell>

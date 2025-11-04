@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -24,7 +25,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar variant="sidebar" side="left" collapsible="icon" className="border-r-0 bg-sidebar">
+    <Sidebar variant="sidebar" side="left" collapsible="icon" className="border-r-0 bg-sidebar-DEFAULT">
       <SidebarHeader className="p-4">
         <Link href="/dashboard" className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
@@ -106,7 +107,7 @@ export default function AppSidebar() {
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
         <div className="bg-sidebar-border/30 p-4 rounded-lg group-data-[collapsible=icon]:hidden text-center">
             <p className="text-sm text-sidebar-foreground">Powered by</p>
-            <p className="font-bold text-white">IBM watsonx Orchestrate</p>
+            <p className="font-bold text-white">IBM watsonx</p>
         </div>
       </SidebarFooter>
     </Sidebar>
