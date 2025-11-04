@@ -1,10 +1,10 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UploadCloud, Database, Cloud, FileCode, CheckCircle, Loader2, BarChart, PieChart, LineChart, Cpu, Search, AlertTriangle, Wand2 } from "lucide-react";
+import { UploadCloud, Database, Cloud, FileCode, CheckCircle, Loader2, Search, AlertTriangle, Wand2, Cpu } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,7 +13,8 @@ import {
     ChartTooltipContent,
   } from "@/components/ui/chart"
 import { Bar, Cell, BarChart as RechartsBarChart, Pie, PieChart as RechartsPieChart, ResponsiveContainer } from "recharts"
-
+import { DataSessionContext } from "@/context/data-session-context";
+import { toast } from "@/hooks/use-toast";
 
 const initialProfilingSteps = [
     { id: "schema", text: "Analyzing Schema...", icon: Search, status: "pending" },
@@ -46,6 +47,7 @@ export default function DataSourcesPage() {
     const [isProfiling, setIsProfiling] = useState(false);
     const [profilingSteps, setProfilingSteps] = useState(initialProfilingSteps);
     const [analysisComplete, setAnalysisComplete] = useState(false);
+    const { addDataSession } = useContext(DataSessionContext);
     
     const startUpload = () => {
         setIsUploading(true);
@@ -75,6 +77,22 @@ export default function DataSourcesPage() {
                 clearInterval(stepInterval);
                 setIsProfiling(false);
                 setAnalysisComplete(true);
+                
+                const integrityScore = Math.floor(initialChartData.reduce((acc, item) => acc + item.completeness, 0) / initialChartData.length);
+                const newSession = {
+                    id: `ds-${Date.now()}`,
+                    source: "sales_data.csv",
+                    records: 1258,
+                    integrityScore: integrityScore,
+                    analyzedAt: "Just now",
+                    status: "Analyzed" as "Analyzed" | "Failed",
+                };
+                addDataSession(newSession);
+                toast({
+                    title: "Data Analysis Complete",
+                    description: `${newSession.source} has been profiled and added to Recent Data Sessions.`,
+                });
+
                 return;
             }
 
@@ -93,12 +111,26 @@ export default function DataSourcesPage() {
         }, 1000);
     };
 
-    const dataTypes = initialChartData.reduce((acc, item) => {
-        acc[item.type] = (acc[item.type] || 0) + 1;
-        return acc;
-    }, {} as Record<string, number>);
+    const dataTypes = useMemo(() => {
+        return initialChartData.reduce((acc, item) => {
+            acc[item.type] = (acc[item.type] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+    }, [initialChartData]);
 
-    const pieData = Object.entries(dataTypes).map(([name, value]) => ({ name, value, fill: name === 'string' ? '#0F62FE' : name === 'number' ? '#08BDBA' : '#A3BFD9' }));
+    const pieData = useMemo(() => {
+        return Object.entries(dataTypes).map(([name, value]) => ({ name, value, fill: name === 'string' ? 'var(--color-string)' : name === 'number' ? 'var(--color-number)' : 'var(--color-date)' }));
+    }, [dataTypes]);
+
+    const chartConfig = {
+        completeness: {
+            label: "Completeness",
+            color: "hsl(var(--primary))",
+        },
+        string: { label: "String", color: "#8884d8" },
+        number: { label: "Number", color: "#82ca9d" },
+        date: { label: "Date", color: "#ffc658" },
+    };
     
     return (
         <div className="space-y-8">
@@ -106,7 +138,7 @@ export default function DataSourcesPage() {
                 <div>
                 <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center gap-3">
                     <span className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                        <Database className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+                        <Database className="h-7 w-7 text-primary" />
                     </span>
                     watsonx.data Dashboard
                 </h1>
@@ -120,8 +152,7 @@ export default function DataSourcesPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                {/* Left Panel: Upload & Sources */}
-                <Card className="lg:col-span-1 shadow-lg">
+                <Card className="lg:col-span-1 shadow-lg bg-card/80 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle>Data Ingestion</CardTitle>
                         <CardDescription>Connect or upload your data source.</CardDescription>
@@ -160,12 +191,11 @@ export default function DataSourcesPage() {
                     </CardContent>
                 </Card>
 
-                {/* Right Panel: Analysis */}
                 <div className="lg:col-span-2 space-y-6">
                     <AnimatePresence>
                     {(isProfiling || analysisComplete) && (
                         <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-20}}>
-                        <Card className="shadow-lg">
+                        <Card className="shadow-lg bg-card/80 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>AI-Powered Data Profiling</CardTitle>
                                 <CardDescription>Analyzing data with watsonx.data...</CardDescription>
@@ -191,25 +221,23 @@ export default function DataSourcesPage() {
                     <AnimatePresence>
                     {analysisComplete && (
                         <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{delay:0.2}}>
-                             <Card className="shadow-lg">
+                             <Card className="shadow-lg bg-card/80 backdrop-blur-sm">
                                 <CardHeader>
                                     <CardTitle>Analysis & Visual Insights</CardTitle>
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                    <div className="space-y-4">
                                        <h3 className="font-semibold">Data Completeness</h3>
-                                       <ChartContainer config={{}} className="h-48">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <RechartsBarChart data={initialChartData} layout="vertical" margin={{ left: 20 }}>
-                                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
-                                                    <Bar dataKey="completeness" fill="#0F62FE" radius={[0, 4, 4, 0]} />
-                                                </RechartsBarChart>
-                                            </ResponsiveContainer>
+                                        <ChartContainer config={chartConfig} className="h-48 w-full">
+                                            <RechartsBarChart data={initialChartData} layout="vertical" margin={{ left: 20, right: 20 }}>
+                                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
+                                                <Bar dataKey="completeness" fill="var(--color-completeness)" radius={[0, 4, 4, 0]} />
+                                            </RechartsBarChart>
                                         </ChartContainer>
                                    </div>
                                     <div className="space-y-4">
                                        <h3 className="font-semibold">Data Type Distribution</h3>
-                                       <ChartContainer config={{}} className="h-48">
+                                       <ChartContainer config={chartConfig} className="h-48">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <RechartsPieChart>
                                                     <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
@@ -225,7 +253,7 @@ export default function DataSourcesPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="mt-6 shadow-lg">
+                            <Card className="mt-6 shadow-lg bg-card/80 backdrop-blur-sm">
                                 <CardHeader>
                                     <CardTitle>Cognitive Insights</CardTitle>
                                 </CardHeader>
@@ -261,5 +289,3 @@ export default function DataSourcesPage() {
         </div>
     );
 }
-
-    

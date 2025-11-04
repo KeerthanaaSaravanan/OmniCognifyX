@@ -1,11 +1,11 @@
 
-
 import StatsCards from "@/components/dashboard/stats-cards";
-import AgentModules from "@/components/dashboard/agent-modules";
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
 import Link from "next/link";
 import WorkflowsDataTable from "@/components/workflows/workflows-data-table";
+import DataSessionsTable from "@/components/dashboard/data-sessions-table";
+import GovernanceReportsTable from "@/components/dashboard/governance-reports-table";
 
 export default function DashboardPage() {
   return (
@@ -27,15 +27,19 @@ export default function DashboardPage() {
 
       <StatsCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <h2 className="text-2xl font-bold tracking-tight mb-4">Recent Workflows</h2>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">Recent Workflows</h2>
           <WorkflowsDataTable />
         </div>
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight mb-4">AI Agent Modules</h2>
-          <AgentModules />
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">Recent Data Sessions</h2>
+          <DataSessionsTable />
         </div>
+      </div>
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight mb-4">Recent Governance Reports</h2>
+        <GovernanceReportsTable />
       </div>
     </div>
   );

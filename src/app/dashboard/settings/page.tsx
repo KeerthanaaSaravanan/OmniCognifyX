@@ -1,13 +1,14 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ShieldCheck, Scale, FileText, BrainCircuit, RefreshCw, ChevronDown, Loader2 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AnimatePresence, motion } from "framer-motion";
+import { GovernanceContext } from "@/context/governance-context";
+import { toast } from "@/hooks/use-toast";
 
 const checks = [
   { id: "integrity", name: "Data Integrity Scan", icon: FileText, duration: 1500 },
@@ -29,6 +30,7 @@ export default function GovernancePage() {
   const [confidenceScore, setConfidenceScore] = useState(0);
   const [generatedInsights, setGeneratedInsights] = useState<string[]>([]);
   const [runId, setRunId] = useState(0);
+  const { addGovernanceReport } = useContext(GovernanceContext);
 
   const startValidation = () => {
     setRunning(true);
@@ -42,7 +44,7 @@ export default function GovernancePage() {
       cumulativeDelay += check.duration;
       setTimeout(() => {
         setCompletedChecks(prev => [...prev, check.id]);
-        setConfidenceScore(Math.round(((index + 1) / checks.length) * 98)); // Cap at 98 for effect
+        setConfidenceScore(Math.round(((index + 1) / checks.length) * 98));
       }, cumulativeDelay - (check.duration / 2));
     });
 
@@ -52,7 +54,23 @@ export default function GovernancePage() {
         insights.forEach(insight => {
             insightDelay += 500;
             setTimeout(() => setGeneratedInsights(prev => [...prev, insight]), insightDelay);
-        })
+        });
+
+        const finalScore = 98;
+        const newReport = {
+            id: `gov-${Date.now()}`,
+            scanType: "Full System Audit",
+            confidenceScore: finalScore,
+            issuesFound: 2,
+            scannedAt: "Just now",
+            status: "Compliant" as "Compliant" | "At Risk",
+        };
+        addGovernanceReport(newReport);
+        toast({
+            title: "Governance Scan Complete",
+            description: `A new report has been added to Recent Governance Reports.`,
+        });
+
     }, cumulativeDelay);
   };
   
@@ -81,8 +99,7 @@ export default function GovernancePage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Validation Panel */}
-        <Card className="lg:col-span-2 shadow-lg">
+        <Card className="lg:col-span-2 shadow-lg bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Automated Governance Flow</CardTitle>
             <CardDescription>Simulating real-time policy and compliance validation.</CardDescription>
@@ -101,13 +118,13 @@ export default function GovernancePage() {
                             transition={{ delay: checks.findIndex(c => c.id === check.id) * 0.1 }}
                             className="flex items-center gap-4 p-4 rounded-lg bg-secondary/50"
                         >
-                            <div className={`p-2 rounded-full ${isCompleted ? "bg-green-500/20" : isRunning ? "bg-blue-500/20 animate-pulse" : "bg-muted"}`}>
-                                <check.icon className={`h-6 w-6 ${isCompleted ? "text-green-500" : isRunning ? "text-blue-500" : "text-muted-foreground"}`} />
+                            <div className={`p-2 rounded-full ${isCompleted ? "bg-green-500/20" : isRunning ? "bg-primary/20 animate-pulse" : "bg-muted"}`}>
+                                <check.icon className={`h-6 w-6 ${isCompleted ? "text-green-500" : isRunning ? "text-primary" : "text-muted-foreground"}`} />
                             </div>
                             <div className="flex-1">
                                 <p className="font-semibold">{check.name}</p>
                                 <div className="h-2 w-full bg-muted rounded-full mt-2 overflow-hidden">
-                                     {isRunning && <motion.div className="h-full bg-blue-500 rounded-full" initial={{width: "0%"}} animate={{width: "100%"}} transition={{duration: check.duration / 1000, ease: "linear"}} />}
+                                     {isRunning && <motion.div className="h-full bg-primary rounded-full" initial={{width: "0%"}} animate={{width: "100%"}} transition={{duration: check.duration / 1000, ease: "linear"}} />}
                                      {isCompleted && <div className="h-full w-full bg-green-500 rounded-full" />}
                                 </div>
                             </div>
@@ -118,7 +135,7 @@ export default function GovernancePage() {
                                     </motion.div>
                                ) : isRunning ? (
                                     <motion.div key="running" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
-                                        <Loader2 className="h-6 w-6 text-blue-500 animate-spin"/>
+                                        <Loader2 className="h-6 w-6 text-primary animate-spin"/>
                                     </motion.div>
                                ) : (
                                     <div className="h-6 w-6" />
@@ -131,9 +148,8 @@ export default function GovernancePage() {
           </CardContent>
         </Card>
 
-        {/* Confidence Score & Insights */}
         <div className="space-y-6">
-            <Card className="text-center shadow-lg">
+            <Card className="text-center shadow-lg bg-card/80 backdrop-blur-sm">
                 <CardHeader>
                     <CardTitle>Governance Confidence Score</CardTitle>
                 </CardHeader>
@@ -167,7 +183,7 @@ export default function GovernancePage() {
             </Card>
 
             <Collapsible defaultOpen={true}>
-                 <Card className="shadow-lg">
+                 <Card className="shadow-lg bg-card/80 backdrop-blur-sm">
                     <CollapsibleTrigger className="w-full">
                         <CardHeader>
                             <CardTitle className="flex items-center justify-between">

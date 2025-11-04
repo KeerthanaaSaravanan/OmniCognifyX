@@ -46,14 +46,30 @@ export interface AvailableTask {
   icon: LucideIcon;
 }
 
+export interface DataSession {
+  id: string;
+  source: string;
+  records: number;
+  integrityScore: number;
+  analyzedAt: string;
+  status: 'Analyzed' | 'Failed';
+}
+
+export interface GovernanceReport {
+    id: string;
+    scanType: string;
+    confidenceScore: number;
+    issuesFound: number;
+    scannedAt: string;
+    status: 'Compliant' | 'At Risk';
+}
+
+
 export const workflows: Workflow[] = [
   { id: 'wf-001', name: 'Customer Feedback Analysis', status: 'Completed', lastRun: '2 hours ago', tasks: 3, duration: '5m 12s' },
   { id: 'wf-002', name: 'Q2 Sales Report Generation', status: 'Running', lastRun: '5 minutes ago', tasks: 5, duration: '1m 30s' },
   { id: 'wf-003', name: 'Social Media Monitoring', status: 'Failed', lastRun: '1 day ago', tasks: 4, duration: '2m 5s' },
   { id: 'wf-004', name: 'New User Onboarding', status: 'Idle', lastRun: '3 days ago', tasks: 6, duration: '8m 45s' },
-  { id: 'wf-005', name: 'Inventory Stock Alert', status: 'Completed', lastRun: '4 hours ago', tasks: 2, duration: '30s' },
-  { id: 'wf-006', name: 'Lead Nurturing Sequence', status: 'Idle', lastRun: '5 days ago', tasks: 8, duration: '12m 15s' },
-  { id: 'wf-007', name: 'Data Backup and Archiving', status: 'Completed', lastRun: '6 hours ago', tasks: 2, duration: '1m 55s' },
 ];
 
 export const users: User[] = [
