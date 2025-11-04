@@ -364,118 +364,127 @@ export default function WorkflowBuilder() {
 
 
   return (
-    <div className="flex w-full h-full rounded-lg overflow-hidden bg-background">
-      {/* Left Toolbar */}
-      <div className="w-20 bg-card/60 backdrop-blur-sm border-r border-border flex flex-col items-center py-4 gap-2 z-20">
-        <Link href="/dashboard">
-          <Button variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" title="Back to Dashboard">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="text-xs mt-1 text-muted-foreground">Home</span>
-          </Button>
-        </Link>
-        <div className="flex-1 flex flex-col items-center justify-start gap-2 pt-8">
-            <p className="text-xs font-semibold text-muted-foreground mb-2">AGENTS</p>
-            {availableTasks.filter(t => t.type === 'agent').map(task => (
-            <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
-                <task.icon className="h-6 w-6 text-primary" />
-                <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background">
+      {/* Top Header */}
+      <header className="flex h-16 flex-shrink-0 items-center justify-between border-b border-border bg-card/60 px-4 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="icon" title="Back to Dashboard">
+              <Home className="h-5 w-5 text-primary" />
             </Button>
-            ))}
-             <p className="text-xs font-semibold text-muted-foreground mt-6 mb-2">LOGIC</p>
-            {availableTasks.filter(t => t.type === 'logic').map(task => (
-            <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
-                <task.icon className="h-6 w-6 text-amber-500" />
-                <span className="text-xs mt-1 text-muted-foreground">{task.name.split(' ')[0]}</span>
-            </Button>
-            ))}
+          </Link>
+          <h2 className="text-lg font-bold text-foreground">OmniMind Workflow Orchestrator</h2>
         </div>
-      </div>
-
-      {/* Main Canvas */}
-      <div className="flex-1 relative overflow-hidden z-10" id="canvas" onClick={(e) => { if(e.target === e.currentTarget) setSelectedStep(null)}}>
-        <div className="absolute inset-0 bg-grid-pattern" />
-        
-         <AnimatePresence>
-          {connections.map(conn => (
-            <ConnectionLine key={conn.id} from={conn.from} to={conn.to} />
-          ))}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {steps.map(step => (
-            <Node
-              key={step.instanceId}
-              step={step}
-              onRemove={removeStep}
-              onSelect={setSelectedStep}
-              isSelected={selectedStep?.instanceId === step.instanceId}
-              onPositionChange={handlePositionChange}
-            />
-          ))}
-        </AnimatePresence>
-
-        {steps.length === 0 && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-muted-foreground pointer-events-none flex flex-col items-center">
-            <div className="w-[400px] h-[200px] border-2 border-dashed border-border/80 rounded-2xl flex items-center justify-center p-8">
-                <div>
-                    <h3 className="text-lg font-bold font-headline text-foreground">TaskFlow Canvas</h3>
-                    <p className="text-sm font-medium">Add an agent from the toolbar or load a template to get started.</p>
-                </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Configuration Sidebar */}
-      <AnimatePresence>
-        {selectedStep && <ConfigurationSidebar selectedTask={selectedStep} onClose={() => setSelectedStep(null)} onSave={handleSaveConfig} />}
-      </AnimatePresence>
-      
-      <AnimatePresence>
-        {isSummaryModalOpen && publishedWorkflow && (
-            <WorkflowSummaryModal
-                isOpen={isSummaryModalOpen}
-                onClose={() => setIsSummaryModalOpen(false)}
-                workflow={publishedWorkflow}
-            />
-        )}
-         {isTemplateModalOpen && (
-            <WorkflowTemplateModal
-                isOpen={isTemplateModalOpen}
-                onClose={() => setIsTemplateModalOpen(false)}
-                onSelectTemplate={loadTemplate}
-            />
-        )}
-      </AnimatePresence>
-
-      {/* Top Buttons */}
-      <div className="absolute top-4 z-20 flex gap-2" style={{ right: selectedStep ? '370px' : '1rem', transition: 'right 0.35s ease-in-out' }}>
-        <Button variant="outline" className="bg-card" onClick={() => setIsTemplateModalOpen(true)}>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="bg-card" onClick={() => setIsTemplateModalOpen(true)}>
             <Book className="mr-2 h-4 w-4" /> Templates
-        </Button>
-        <Button variant="outline" className="bg-card">Save Draft</Button>
-        <Button onClick={handlePublish}>Publish Workflow</Button>
-      </div>
-
-      <div className="absolute top-4 left-24 z-20 flex items-center gap-2">
-        <h2 className="text-lg font-bold text-foreground">OmniMind Workflow Orchestrator</h2>
-      </div>
-      
-       <div className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-card/80 backdrop-blur-sm p-1 rounded-lg border">
-          <Button variant="ghost" size="icon" className="h-8 w-8"><ZoomIn className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8"><ZoomOut className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8"><Minimize className="h-4 w-4" /></Button>
+          </Button>
+          <Button variant="outline" className="bg-card">Save Draft</Button>
+          <Button onClick={handlePublish}>Publish Workflow</Button>
         </div>
+      </header>
 
-        <div className="absolute bottom-4 left-24 z-20 p-2 rounded-lg bg-card/80 backdrop-blur-sm border flex items-center gap-2">
-            <div className="p-2 rounded-full bg-blue-500/10 animate-pulse">
-                <Wand2 className="h-5 w-5 text-primary" />
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Toolbar */}
+        <aside className="w-20 flex-shrink-0 border-r border-border bg-card/60 backdrop-blur-sm">
+          <div className="flex h-full flex-col items-center gap-2 overflow-y-auto py-4">
+            <p className="pb-2 text-xs font-semibold text-muted-foreground">AGENTS</p>
+            {availableTasks.filter(t => t.type === 'agent').map(task => (
+              <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+                  <task.icon className="h-6 w-6 text-primary" />
+                  <span className="mt-1 text-xs text-muted-foreground">{task.name.split(' ')[0]}</span>
+              </Button>
+            ))}
+            <p className="pt-6 pb-2 text-xs font-semibold text-muted-foreground">LOGIC</p>
+            {availableTasks.filter(t => t.type === 'logic').map(task => (
+              <Button key={task.id} variant="ghost" size="icon" className="h-16 w-16 flex-col rounded-xl" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+                  <task.icon className="h-6 w-6 text-amber-500" />
+                  <span className="mt-1 text-xs text-muted-foreground">{task.name.split(' ')[0]}</span>
+              </Button>
+            ))}
+          </div>
+        </aside>
+
+        {/* Main Canvas */}
+        <main className="relative flex-1" id="canvas" onClick={(e) => { if (e.target === e.currentTarget) setSelectedStep(null) }}>
+          <div className="absolute inset-0 bg-grid-pattern" />
+          
+          <AnimatePresence>
+            {connections.map(conn => (
+              <ConnectionLine key={conn.id} from={conn.from} to={conn.to} />
+            ))}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {steps.map(step => (
+              <Node
+                key={step.instanceId}
+                step={step}
+                onRemove={removeStep}
+                onSelect={setSelectedStep}
+                isSelected={selectedStep?.instanceId === step.instanceId}
+                onPositionChange={handlePositionChange}
+              />
+            ))}
+          </AnimatePresence>
+
+          {steps.length === 0 && (
+            <div className="pointer-events-none absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center text-muted-foreground">
+              <div className="flex h-[200px] w-[400px] items-center justify-center rounded-2xl border-2 border-dashed border-border/80 p-8">
+                <div>
+                  <h3 className="font-headline text-lg font-bold text-foreground">TaskFlow Canvas</h3>
+                  <p className="text-sm font-medium">Add an agent from the toolbar or load a template to get started.</p>
+                </div>
+              </div>
             </div>
-            <div>
-                <p className="text-sm font-semibold">OmniFlow AI Assistant</p>
-                <p className="text-xs text-muted-foreground">Ready to help you build.</p>
-            </div>
-        </div>
+          )}
+
+          {/* Bottom Right Controls */}
+          <div className="absolute bottom-4 right-4 z-20 flex items-center gap-1 rounded-lg border bg-card/80 p-1 backdrop-blur-sm">
+            <Button variant="ghost" size="icon" className="h-8 w-8"><ZoomIn className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8"><ZoomOut className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8"><Minimize className="h-4 w-4" /></Button>
+          </div>
+
+          {/* Bottom Left AI Assistant */}
+          <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 rounded-lg border bg-card/80 p-2 backdrop-blur-sm">
+              <div className="animate-pulse rounded-full bg-blue-500/10 p-2">
+                  <Wand2 className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                  <p className="text-sm font-semibold">OmniFlow AI Assistant</p>
+                  <p className="text-xs text-muted-foreground">Ready to help you build.</p>
+              </div>
+          </div>
+
+        </main>
+
+        {/* Configuration Sidebar */}
+        <AnimatePresence>
+          {selectedStep && <ConfigurationSidebar selectedTask={selectedStep} onClose={() => setSelectedStep(null)} onSave={handleSaveConfig} />}
+        </AnimatePresence>
+        
+        {/* Modals */}
+        <AnimatePresence>
+          {isSummaryModalOpen && publishedWorkflow && (
+              <WorkflowSummaryModal
+                  isOpen={isSummaryModalOpen}
+                  onClose={() => setIsSummaryModalOpen(false)}
+                  workflow={publishedWorkflow}
+              />
+          )}
+          {isTemplateModalOpen && (
+              <WorkflowTemplateModal
+                  isOpen={isTemplateModalOpen}
+                  onClose={() => setIsTemplateModalOpen(false)}
+                  onSelectTemplate={loadTemplate}
+              />
+          )}
+        </AnimatePresence>
+
+      </div>
     </div>
   );
 }
+
+    
