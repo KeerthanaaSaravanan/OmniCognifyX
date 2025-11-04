@@ -38,7 +38,7 @@ const Node = ({
       dragListener={false}
       dragControls={dragControls}
       onDragEnd={(event, info) => {
-        onPositionChange(step.instanceId, { x: info.point.x, y: info.point.y });
+        onPositionChange(step.instanceId, { x: step.position.x + info.offset.x, y: step.position.y + info.offset.y });
       }}
       dragMomentum={false}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -219,7 +219,7 @@ export default function WorkflowBuilder() {
       </div>
 
       {/* Main Canvas */}
-      <div className="flex-1 relative overflow-hidden z-10" id="canvas">
+      <div className="flex-1 relative overflow-auto z-10" id="canvas">
          <AnimatePresence>
           {connections.map(conn => (
             <ConnectionLine key={conn.id} from={conn.from} to={conn.to} />

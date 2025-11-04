@@ -25,10 +25,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <AppHeader />
             <main className={cn(
               "flex-1 bg-gray-50/50 dark:bg-gray-950/20",
-              isWorkflowBuilder ? 'p-4' : 'p-6 md:p-8'
+              isWorkflowBuilder ? 'p-0' : 'p-6 md:p-8'
             )}>
               <PageTransition>
-                <div className={cn(!isWorkflowBuilder && "mx-auto max-w-screen-2xl")}>
+                <div className={cn("h-full", !isWorkflowBuilder && "mx-auto max-w-screen-2xl")}>
                     {children}
                 </div>
               </PageTransition>
@@ -39,3 +39,5 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     </DemoModeProvider>
   );
 }
+
+    
