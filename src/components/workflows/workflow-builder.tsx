@@ -1,203 +1,157 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { availableTasks } from "@/lib/data";
 import type { AvailableTask } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { PlusCircle, GripVertical, Trash2, Bot, Sparkles, Loader2, Wand2 } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { getAIResult } from "@/app/actions";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { PlusCircle, GripVertical, Trash2, X, Settings } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
-type WorkflowStep = AvailableTask & { instanceId: number };
+type WorkflowStep = AvailableTask & { instanceId: number; y: number };
+
+const Node = ({ step, onRemove }: { step: WorkflowStep; onRemove: (id: number) => void; }) => {
+    return (
+        <motion.div
+            layout
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="relative bg-neutral-800/80 border border-neutral-700 rounded-lg p-4 w-80 shadow-lg flex items-start gap-4"
+            style={{ y: step.y }}
+        >
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 h-6 w-6 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center">
+                <div className="h-2 w-2 rounded-full bg-neutral-500" />
+            </div>
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 h-6 w-6 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center">
+                <div className="h-2 w-2 rounded-full bg-neutral-500" />
+            </div>
+
+            <step.icon className="h-6 w-6 text-primary mt-1" />
+            <div className="flex-1">
+                <div className="flex justify-between items-center">
+                    <p className="font-bold">{step.name}</p>
+                    <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Settings className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-destructive/20 hover:text-destructive" onClick={() => onRemove(step.instanceId)}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+                <p className="text-sm text-neutral-400 mt-1">{step.description}</p>
+                <p className="text-xs text-neutral-500 mt-2">ID: {`inst_${step.instanceId}`}</p>
+            </div>
+        </motion.div>
+    );
+};
+
+
+const ConnectionLine = ({ fromY, toY }: { fromY: number, toY: number }) => {
+  const y1 = fromY + 80; // Bottom of the node approx
+  const y2 = toY - 12; // Top of the node approx
+  const midY = (y1 + y2) / 2;
+
+  // Straight line from bottom of one node to top of next
+  const pathData = `M 160 ${y1} L 160 ${y2}`;
+
+  return (
+    <svg className="absolute top-0 left-0 w-80 h-full pointer-events-none" style={{height: "100%"}}>
+      <path d={pathData} stroke="hsl(var(--border))" strokeWidth="1.5" fill="none" />
+    </svg>
+  );
+};
+
+
+const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: AvailableTask | null; onClose: () => void; }) => {
+    if (!selectedTask) return null;
+
+    return (
+        <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 350, damping: 35 }}
+            className="absolute top-0 right-0 h-full w-[350px] bg-neutral-900 border-l border-neutral-800 shadow-2xl flex flex-col"
+        >
+            <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <selectedTask.icon className="h-6 w-6 text-primary" />
+                    <h3 className="text-lg font-bold">{selectedTask.name}</h3>
+                </div>
+                <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5"/></Button>
+            </div>
+            <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+                <p className="text-sm text-neutral-400">Configure the settings for your task below.</p>
+                <div>
+                  <label className="text-xs font-medium text-neutral-400">Message</label>
+                  <textarea className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 mt-1 text-sm focus:ring-primary focus:border-primary" defaultValue={`This is a test message from ${selectedTask.name}`}></textarea>
+                </div>
+            </div>
+            <div className="p-4 border-t border-neutral-800 flex justify-end gap-2">
+                <Button variant="secondary">Test Message</Button>
+                <Button>Save Template</Button>
+            </div>
+        </motion.div>
+    )
+}
 
 export default function WorkflowBuilder() {
-  const [workflowName, setWorkflowName] = useState("My New Workflow");
   const [steps, setSteps] = useState<WorkflowStep[]>([]);
-  const { toast } = useToast();
+  const [selectedTask, setSelectedTask] = useState<AvailableTask | null>(null);
 
   const addStep = (task: AvailableTask) => {
-    const newStep: WorkflowStep = { ...task, instanceId: Date.now() };
+    const newStep: WorkflowStep = { ...task, instanceId: Date.now(), y: steps.length * 140 };
     setSteps([...steps, newStep]);
+    setSelectedTask(task);
   };
 
   const removeStep = (instanceId: number) => {
     setSteps(steps.filter((step) => step.instanceId !== instanceId));
   };
   
-  const handleSave = () => {
-    toast({
-      title: "Workflow Saved!",
-      description: `Your workflow "${workflowName}" has been saved successfully.`,
-    })
-  }
-
   return (
-    <div className="grid md:grid-cols-3 gap-8 items-start">
-      {/* Available Tasks Panel */}
-      <Card className="md:col-span-1">
-        <CardHeader>
-          <CardTitle>Available Tasks</CardTitle>
-          <CardDescription>Drag or click to add tasks to your workflow.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {availableTasks.map((task) => (
-            <div key={task.id} className="flex items-center gap-2 p-3 rounded-lg border bg-card hover:bg-muted transition-colors">
-              <task.icon className="h-6 w-6 text-primary" />
-              <div className="flex-1">
-                <p className="font-medium">{task.name}</p>
-                <p className="text-sm text-muted-foreground">{task.description}</p>
-              </div>
-              <Button size="icon" variant="ghost" onClick={() => addStep(task)}>
-                <PlusCircle className="h-5 w-5" />
-              </Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Workflow Canvas Panel */}
-      <div className="md:col-span-2 space-y-6">
-        <Card>
-          <CardContent className="p-6">
-            <Input
-              value={workflowName}
-              onChange={(e) => setWorkflowName(e.target.value)}
-              className="text-2xl font-bold border-none shadow-none focus-visible:ring-0 p-0"
-            />
-          </CardContent>
-        </Card>
-
-        <div className="space-y-4">
-            {steps.length === 0 && (
-                <div className="text-center py-16 border-2 border-dashed rounded-lg">
-                    <h3 className="text-lg font-medium text-muted-foreground">Workflow Canvas</h3>
-                    <p className="text-sm text-muted-foreground">Add tasks from the left panel to begin.</p>
-                </div>
-            )}
-            {steps.map((step, index) => (
-                <div key={step.instanceId} className="flex items-center gap-4">
-                    <div className="text-muted-foreground">{index + 1}</div>
-                    <Card className="flex-1">
-                        <CardHeader className="flex flex-row items-center gap-4 p-4">
-                            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
-                            <step.icon className="h-6 w-6 text-primary" />
-                            <div className="flex-1">
-                                <CardTitle className="text-base">{step.name}</CardTitle>
-                            </div>
-                            <TaskConfigurationDialog step={step} />
-                            <Button variant="ghost" size="icon" onClick={() => removeStep(step.instanceId)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                        </CardHeader>
-                    </Card>
-                </div>
+    <div className="flex w-full h-full bg-neutral-900 rounded-lg border border-neutral-800 overflow-hidden relative">
+        {/* Left Toolbar */}
+        <div className="w-16 bg-neutral-950/50 border-r border-neutral-800 flex flex-col items-center p-2 gap-2">
+            {availableTasks.map(task => (
+                <Button key={task.id} variant="ghost" size="icon" className="h-12 w-12" onClick={() => addStep(task)} title={`Add ${task.name}`}>
+                    <task.icon className="h-6 w-6"/>
+                </Button>
             ))}
         </div>
-        
-        {steps.length > 0 && (
-            <div className="flex justify-end">
-                <Button onClick={handleSave}>Save Workflow</Button>
-            </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function TaskConfigurationDialog({ step }: { step: WorkflowStep }) {
-    const { toast } = useToast();
-    const [inputData, setInputData] = useState('Example: "The new OmniMind platform is incredibly intuitive and powerful!"');
-    const [aiResult, setAiResult] = useState<string | null>(null);
-    const [recommendation, setRecommendation] = useState<string | null>(null);
-    const [isSimulating, startSimulationTransition] = useTransition();
-    const [isRecommending, startRecommendationTransition] = useTransition();
+        {/* Main Canvas */}
+        <div className="flex-1 relative overflow-auto p-8">
+            <div className="relative w-max mx-auto">
+                <AnimatePresence>
+                    {steps.map((step, index) => (
+                         <div key={step.instanceId} className="relative mb-12">
+                             <Node step={step} onRemove={removeStep} />
+                             {index > 0 && <ConnectionLine fromY={steps[index-1].y} toY={step.y} />}
+                         </div>
+                    ))}
+                </AnimatePresence>
 
-    const handleSimulation = () => {
-        startSimulationTransition(async () => {
-            setAiResult(null);
-            const response = await getAIResult({ taskType: step.name, inputData });
-            if ('result' in response) {
-                setAiResult(response.result);
-            } else {
-                toast({ variant: 'destructive', title: 'Simulation Failed', description: response.error });
-            }
-        });
-    }
-
-    const handleRecommendation = () => {
-        startRecommendationTransition(async () => {
-            setRecommendation(null);
-            const response = await getAIResult({ taskType: 'Parameter Recommendation', inputData: `Suggest optimal configurations and parameters for the AI task: ${step.name}. Consider performance and cost-efficiency.` });
-            if ('result' in response) {
-                setRecommendation(response.result);
-            } else {
-                toast({ variant: 'destructive', title: 'Recommendation Failed', description: response.error });
-            }
-        })
-    }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Configure</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px]">
-        <DialogHeader>
-          <DialogTitle>Configure: {step.name}</DialogTitle>
-          <DialogDescription>
-            Set parameters and simulate this workflow step.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-                <h4 className="font-medium">AI Parameter Recommendations</h4>
-                <Button variant="outline" size="sm" onClick={handleRecommendation} disabled={isRecommending}>
-                    {isRecommending ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4" />}
-                    Get AI Recommendations
-                </Button>
-                {isRecommending && <p className="text-sm text-muted-foreground">Getting recommendations...</p>}
-                {recommendation && (
-                    <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
-                        <Sparkles className="h-4 w-4 text-blue-500" />
-                        <AlertTitle className="text-blue-700 dark:text-blue-300">AI Suggestion</AlertTitle>
-                        <AlertDescription className="text-blue-600 dark:text-blue-400">
-                           {recommendation}
-                        </AlertDescription>
-                    </Alert>
-                )}
-            </div>
-            <Separator/>
-            <div className="space-y-2">
-                <h4 className="font-medium">Simulate Task</h4>
-                <Textarea placeholder="Enter input data for simulation" value={inputData} onChange={e => setInputData(e.target.value)} />
-                <Button onClick={handleSimulation} disabled={isSimulating}>
-                    {isSimulating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Bot className="mr-2 h-4 w-4" />}
-                    Run Simulation
-                </Button>
-
-                {isSimulating && <p className="text-sm text-muted-foreground">Simulating AI task...</p>}
-                {aiResult && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Simulation Result</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm">{aiResult}</p>
-                        </CardContent>
-                    </Card>
+                {steps.length === 0 && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-neutral-500">
+                        <p>Add a task from the toolbar to get started.</p>
+                    </div>
                 )}
             </div>
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+
+        {/* Configuration Sidebar */}
+        <AnimatePresence>
+            {selectedTask && <ConfigurationSidebar selectedTask={selectedTask} onClose={() => setSelectedTask(null)} />}
+        </AnimatePresence>
+
+        {/* Top Buttons */}
+        <div className="absolute top-4 right-4 z-10 flex gap-2">
+            <Button variant="secondary">Save</Button>
+            <Button>Publish</Button>
+        </div>
+    </div>
   );
 }
