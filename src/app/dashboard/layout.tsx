@@ -1,12 +1,20 @@
+
+'use client';
+
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/layout/app-sidebar";
 import AppHeader from "@/components/layout/app-header";
 import { DemoModeProvider } from "@/context/demo-mode-context";
 import RecordingBanner from "@/components/layout/recording-banner";
 import { PageTransition } from "@/components/layout/page-transition";
+import { cn } from "@/lib/utils";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isWorkflowBuilder = pathname === '/dashboard/workflows/create';
+
   return (
     <DemoModeProvider>
       <SidebarProvider>
@@ -15,12 +23,15 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex-1 flex flex-col">
             <RecordingBanner />
             <AppHeader />
-            <main className="flex-1 p-6 md:p-8 lg:p-12 bg-gray-50/50 dark:bg-gray-950/20">
-                <PageTransition>
-                    <div className="mx-auto max-w-7xl">
-                        {children}
-                    </div>
-                </PageTransition>
+            <main className={cn(
+              "flex-1 bg-gray-50/50 dark:bg-gray-950/20",
+              isWorkflowBuilder ? 'p-4' : 'p-6 md:p-8'
+            )}>
+              <PageTransition>
+                <div className={cn(!isWorkflowBuilder && "mx-auto max-w-screen-2xl")}>
+                    {children}
+                </div>
+              </PageTransition>
             </main>
           </div>
         </div>
