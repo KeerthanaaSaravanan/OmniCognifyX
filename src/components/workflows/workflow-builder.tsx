@@ -3,10 +3,11 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { availableTasks } from "@/lib/data";
-import type { AvailableTask } from "@/lib/data";
+import type { AvailableTask, Workflow } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash2, X, Settings, MousePointer2 } from "lucide-react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
+import WorkflowSummaryModal from "./workflow-summary-modal";
 
 type WorkflowStep = AvailableTask & {
   instanceId: string;
@@ -162,6 +163,9 @@ const ConfigurationSidebar = ({ selectedTask, onClose }: { selectedTask: Workflo
 export default function WorkflowBuilder() {
   const [steps, setSteps] = useState<WorkflowStep[]>([]);
   const [selectedStep, setSelectedStep] = useState<WorkflowStep | null>(null);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+  const [publishedWorkflow, setPublishedWorkflow] = useState<Omit<Workflow, 'id' | 'status' | 'duration' | 'lastRun'> & {agents: string[]}> | null>(null);
+
 
   const addStep = (task: AvailableTask) => {
     const yOffset = steps.length * 150; // Increased vertical spacing
@@ -204,6 +208,22 @@ export default function WorkflowBuilder() {
     }).filter(Boolean) as { from: {x: number, y: number}, to: {x: number, y: number}, id: string}[];
   }, [steps]);
   
+  const handlePublish = () => {
+    if (steps.length === 0) {
+        // You might want to show a toast or message here
+        return;
+    }
+    // Simulate successful publish
+    const workflowData = {
+        name: `My New Workflow #${Math.floor(Math.random() * 1000)}`,
+        tasks: steps.length,
+        agents: steps.map(s => s.name),
+        createdAt: new Date(),
+    };
+    setPublishedWorkflow(workflowData);
+    setIsSummaryModalOpen(true);
+  };
+
 
   return (
     <div className="flex w-full h-full rounded-lg overflow-hidden">
@@ -267,11 +287,21 @@ export default function WorkflowBuilder() {
       <AnimatePresence>
         {selectedStep && <ConfigurationSidebar selectedTask={selectedStep} onClose={() => setSelectedStep(null)} />}
       </AnimatePresence>
+      
+      <AnimatePresence>
+        {isSummaryModalOpen && publishedWorkflow && (
+            <WorkflowSummaryModal
+                isOpen={isSummaryModalOpen}
+                onClose={() => setIsSummaryModalOpen(false)}
+                workflow={publishedWorkflow}
+            />
+        )}
+      </AnimatePresence>
 
       {/* Top Buttons */}
       <div className="absolute top-4 right-4 z-20 flex gap-2" style={{ right: selectedStep ? '370px' : '1rem', transition: 'right 0.35s ease-in-out' }}>
         <Button variant="outline" className="bg-white">Save Draft</Button>
-        <Button>Publish Workflow</Button>
+        <Button onClick={handlePublish}>Publish Workflow</Button>
       </div>
     </div>
   );
