@@ -13,6 +13,7 @@ import {
   Repeat,
   GitMerge,
   Puzzle,
+  Cpu,
 } from 'lucide-react';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -150,6 +151,7 @@ export const agentNavItems = [
 
 export const optimizationNavItems = [
     { href: "/dashboard/col", icon: Lightbulb, label: "Cognitive Loop", subLabel: "Self-optimizing AI" },
+    { href: "/dashboard/agent-hub", icon: Cpu, label: "Agent Hub", subLabel: "Autonomous Agents" },
 ]
 
 export const helpNavItems = []

@@ -52,3 +52,14 @@ export async function triggerDemo(): Promise<{ success: boolean } | { error: str
     return { error: "Failed to trigger demo sequence." };
   }
 }
+
+export async function generateAgent(input: { pattern: string, tools: string[] }): Promise<{ success: boolean; manifest?: any } | { error: string }> {
+  try {
+    // In a real app, this would call the Genkit flow
+    const manifest = await generateAgentManifest(input);
+    return { success: true, manifest };
+  } catch (e) {
+    console.error("Failed to generate agent:", e);
+    return { error: "Failed to generate agent manifest." };
+  }
+}
