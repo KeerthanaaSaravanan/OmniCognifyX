@@ -85,5 +85,7 @@ Licensed under the **MIT License**.
 
 ## Contact
 **Project Lead:** Inesh N
+
 **Email:** inesh2010nj@gmail.com
+
 **GitHub:** [https://github.com/KeerthanaaSaravanan/OmniCognifyX.git](https://github.com/KeerthanaaSaravanan/OmniCognifyX.git)
